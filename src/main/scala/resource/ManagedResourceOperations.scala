@@ -45,21 +45,6 @@ trait ManagedResourceOperations[+R] extends ManagedResource[R] { self =>
   override def foreach(f: R => Unit): Unit = acquireAndGet(f)
 
   override def and[B](that: ManagedResource[B]) : ManagedResource[(R,B)] = resource.and(self,that)
-
-  override def reflect[B]: R @cps[Either[List[Throwable], B]] = shift {
-    k: (R => Either[List[Throwable],B]) =>
-      acquireFor(k).fold(list => Left(list), identity)
-  }
-  // Some wierd intersection of scaladoc2 + continuations plugin forces us to be explicit about types here!
-  override def now: R @suspendable = shift { (k : R => Unit) =>
-    acquireAndGet(k)
-    ()
-  } 
-  // You may be asking why now and ! have the same implementation?  Binary compatibility.... YIPIEE!!!
-  override def ! : R @suspendable = shift { (k : R => Unit) =>
-    acquireAndGet(k)
-    ()
-  } 
 }
 
 

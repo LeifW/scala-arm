@@ -364,22 +364,4 @@ class TestManagedResource {
     assertFalse("Failed to close resource", r.isOpened)
   }
 
-  @Test
-  def withResourceMustBeAwesome() {
-    val outer = new FakeResource
-    val inners = List(new FakeResource, new FakeResource, new FakeResource)
-    val all = outer :: inners
-
-    val results = withResources {
-      val mo = managed(outer).reflect[Double]
-      //TODO - Figure out the stink here!
-      //for(r <- inners; val mi = managed(r).reflect[List[Double]]) yield mi.generateData + mo.generateData
-      mo.generateData
-    }
-    // If we have no exceptions, we were mostly awesome!
-
-    for( r <- all) {
-      assertFalse("Failed to close a resource!", r.isOpened)
-    }
-  }
 }

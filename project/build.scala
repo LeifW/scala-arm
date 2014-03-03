@@ -13,7 +13,7 @@ object ArmDef extends Build {
   val arm = (Project("scala-arm", file(".")) settings(
     organization := "com.jsuereth",
     name := "scala-arm",
-    version := "1.4-SNAPSHOT",
+    version := "2.0-SNAPSHOT",
     scalaVersion := "2.10.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
     resolvers += "java.net repo" at "http://download.java.net/maven/2/",

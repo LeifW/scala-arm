@@ -46,8 +46,18 @@ package object resource {
    */
   def and[A,B](r1: ManagedResource[A], r2: ManagedResource[B]) = 
     new ManagedResource[(A,B)] with ManagedResourceOperations[(A,B)] {
-      override def acquireFor[C](f: ((A,B)) => C) = 
-        withResources { f(Tuple2(r1.reflect[C], r2.reflect[C])) }
+      override def acquireFor[C](f: ((A,B)) => C): Either[List[Throwable], C] = {
+        r1.acquireFor { resource1 =>
+          r2.acquireFor { resource2 =>
+            f(resource1, resource2)
+          }
+        } match {
+          // TODO - we want to list out the errors on the resources...
+          case Left(err) => Left(err)
+          case Right(Left(err)) => Left(err)
+          case Right(Right(result)) => Right(result) 
+        }
+      }
     }
 
   /**

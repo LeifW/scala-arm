@@ -16,7 +16,6 @@ package resource
 import _root_.scala.collection.Traversable
 import _root_.scala.collection.Iterator
 import _root_.scala.Either
-import util.continuations.{suspendable, cps}
 
 /**
  * This class encapsulates a method of ensuring a resource is opened/closed during critical stages of its lifecycle.
@@ -108,36 +107,6 @@ trait ManagedResource[+R] {
    *          A resource that is a tupled combination of this and that.
    */
   def and[B](that: ManagedResource[B]): ManagedResource[(R,B)]
-
-  /**
-   * Reflects the resource for use in a continuation.   This method is designed to be used inside a
-   * <code>scala.resource.withResources</code> call.
-   *
-   * For example:
-   *
-   * <pre>
-   * import scala.resource._
-   * withResources {
-   *   val output = managed(new FileInputStream("output.txt")).reflect[Unit]
-   *   for(i <- 1 to 10) {
-   *     val input = managed(new FileInputStream("sample"+i+".txt")).reflect[Unit]
-   *     input lines foreach (output writeLine _)
-   *   }
-   * }
-   * </pre>
-   * @return The raw resource, with appropriate continuation-context annotations.
-   */
-  def reflect[B]: R @cps[Either[List[Throwable], B]]
-  /**
-   * Accesses this resource inside a suspendable CPS block
-   */
-  @deprecated("Use now instead of !", "1.3")
-  def ! : R @suspendable
-
-  /**
-   * Accesses this resource inside a suspendable CPS block
-   */
-  def now: R @suspendable
 }
 
 
