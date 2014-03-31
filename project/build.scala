@@ -16,7 +16,6 @@ object ArmDef extends Build {
     version := "1.4-SNAPSHOT",
     scalaVersion := "2.10.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
-    resolvers += "java.net repo" at "http://download.java.net/maven/2/",
     libraryDependencies ++= dependencies,
     autoCompilerPlugins := true,
     addContinuations,
